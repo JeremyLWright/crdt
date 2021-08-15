@@ -18,3 +18,6 @@ pubspec.lock
 # Hive stuff
 *.hive
 *.lock
+
+# Generated files
+*.g.dart

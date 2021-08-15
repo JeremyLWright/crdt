@@ -16,74 +16,74 @@ void crdtTests<T extends Crdt<String, int>>(String nodeId,
       crdt = syncSetup != null ? syncSetup() : await asyncSetup!();
     });
 
-    test('Node ID', () {
+    test('Node ID', () async {
       expect(crdt.nodeId, nodeId);
     });
 
-    test('Empty', () {
-      expect(crdt.isEmpty, isTrue);
-      expect(crdt.length, 0);
-      expect(crdt.map, {});
-      expect(crdt.keys, []);
-      expect(crdt.values, []);
+    test('Empty', () async {
+      expect(await crdt.isEmpty, isTrue);
+      expect(await crdt.length, 0);
+      expect(await crdt.map, {});
+      expect(await crdt.keys, []);
+      expect(await crdt.values, []);
     });
 
-    test('One record', () {
-      crdt.put('x', 1);
+    test('One record', () async {
+      await crdt.put('x', 1);
 
-      expect(crdt.isEmpty, isFalse);
-      expect(crdt.length, 1);
-      expect(crdt.map, {'x': 1});
-      expect(crdt.keys, ['x']);
-      expect(crdt.values, [1]);
+      expect(await crdt.isEmpty, isFalse);
+      expect(await crdt.length, 1);
+      expect(await crdt.map, {'x': 1});
+      expect(await crdt.keys, ['x']);
+      expect(await crdt.values, [1]);
     });
 
-    test('Empty after deleted record', () {
-      crdt.put('x', 1);
-      crdt.delete('x');
+    test('Empty after deleted record', () async {
+      await crdt.put('x', 1);
+      await crdt.delete('x');
 
-      expect(crdt.isEmpty, isTrue);
-      expect(crdt.length, 0);
-      expect(crdt.map, {});
-      expect(crdt.keys, []);
-      expect(crdt.values, []);
+      expect(await crdt.isEmpty, isTrue);
+      expect(await crdt.length, 0);
+      expect(await crdt.map, {});
+      expect(await crdt.keys, []);
+      expect(await crdt.values, []);
     });
 
-    test('Put', () {
-      crdt.put('x', 1);
-      expect(crdt.get('x'), 1);
+    test('Put', () async {
+      await crdt.put('x', 1);
+      expect(await crdt.get('x'), 1);
     });
 
-    test('Update existing', () {
-      crdt.put('x', 1);
-      crdt.put('x', 2);
-      expect(crdt.get('x'), 2);
+    test('Update existing', () async {
+      await crdt.put('x', 1);
+      await crdt.put('x', 2);
+      expect(await crdt.get('x'), 2);
     });
 
-    test('Put many', () {
-      crdt.putAll({'x': 2, 'y': 3});
-      expect(crdt.get('x'), 2);
-      expect(crdt.get('y'), 3);
+    test('Put many', () async {
+      await crdt.putAll({'x': 2, 'y': 3});
+      expect(await crdt.get('x'), 2);
+      expect(await crdt.get('y'), 3);
     });
 
-    test('Delete value', () {
-      crdt.put('x', 1);
-      crdt.put('y', 2);
-      crdt.delete('x');
-      expect(crdt.isDeleted('x'), isTrue);
-      expect(crdt.isDeleted('y'), isFalse);
-      expect(crdt.get('x'), null);
-      expect(crdt.get('y'), 2);
+    test('Delete value', () async {
+      await crdt.put('x', 1);
+      await crdt.put('y', 2);
+      await crdt.delete('x');
+      expect(await crdt.isDeleted('x'), isTrue);
+      expect(await crdt.isDeleted('y'), isFalse);
+      expect(await crdt.get('x'), null);
+      expect(await crdt.get('y'), 2);
     });
 
-    test('Clear', () {
-      crdt.put('x', 1);
-      crdt.put('y', 2);
-      crdt.clear();
-      expect(crdt.isDeleted('x'), isTrue);
-      expect(crdt.isDeleted('y'), isTrue);
-      expect(crdt.get('x'), null);
-      expect(crdt.get('y'), null);
+    test('Clear', () async {
+      await crdt.put('x', 1);
+      await crdt.put('y', 2);
+      await crdt.clear();
+      expect(await crdt.isDeleted('x'), isTrue);
+      expect(await crdt.isDeleted('y'), isTrue);
+      expect(await crdt.get('x'), null);
+      expect(await crdt.get('y'), null);
     });
 
     tearDown(() async {
@@ -103,10 +103,8 @@ void crdtTests<T extends Crdt<String, int>>(String nodeId,
       final streamTest = expectLater(
           crdt.watch(),
           emitsInAnyOrder([
-            (MapEntry<String, int?> event) =>
-                event.key == 'x' && event.value == 1,
-            (MapEntry<String, int?> event) =>
-                event.key == 'y' && event.value == 2,
+            (MapEntry<String, int?> event) => event.key == 'x' && event.value == 1,
+            (MapEntry<String, int?> event) => event.key == 'y' && event.value == 2,
           ]));
       crdt.put('x', 1);
       crdt.put('y', 2);

@@ -13,41 +13,43 @@ class MapCrdt<K, V> extends Crdt<K, V> {
   @override
   final dynamic nodeId;
 
-  MapCrdt(this.nodeId, [Map<K, Record<V>> seed = const {}]) {
+  MapCrdt._create(this.nodeId, [Map<K, Record<V>> seed = const {}]) {
     _map.addAll(seed);
   }
 
-  @override
-  bool containsKey(K key) => _map.containsKey(key);
+  static Future<MapCrdt<K, V>> create<K, V>(dynamic nodeId,
+      [Map<K, Record<V>> seed = const {}]) async {
+    final m = MapCrdt._create(nodeId, seed);
+    await m.init();
+    return m;
+  }
 
   @override
-  Record<V>? getRecord(K key) => _map[key];
+  Future<bool> containsKey(K key) async => _map.containsKey(key);
 
   @override
-  void putRecord(K key, Record<V> value) {
+  Future<Record<V>?> getRecord(K key) async => _map[key];
+
+  @override
+  Future<void> putRecord(K key, Record<V> value) async {
     _map[key] = value;
     _controller.add(MapEntry(key, value.value));
   }
 
   @override
-  void putRecords(Map<K, Record<V>> recordMap) {
+  Future<void> putRecords(Map<K, Record<V>> recordMap) async {
     _map.addAll(recordMap);
-    recordMap
-        .map((key, value) => MapEntry(key, value.value))
-        .entries
-        .forEach(_controller.add);
+    recordMap.map((key, value) => MapEntry(key, value.value)).entries.forEach(_controller.add);
   }
 
   @override
-  Map<K, Record<V>> recordMap({Hlc? modifiedSince}) =>
-      Map<K, Record<V>>.from(_map)
-        ..removeWhere((_, record) =>
-            record.modified.logicalTime < (modifiedSince?.logicalTime ?? 0));
+  Future<Map<K, Record<V>>> recordMap({Hlc? modifiedSince}) async => Map<K, Record<V>>.from(_map)
+    ..removeWhere((_, record) => record.modified.logicalTime < (modifiedSince?.logicalTime ?? 0));
 
   @override
   Stream<MapEntry<K, V?>> watch({K? key}) =>
       _controller.stream.where((event) => key == null || key == event.key);
 
   @override
-  void purge() => _map.clear();
+  Future<void> purge() async => _map.clear();
 }
