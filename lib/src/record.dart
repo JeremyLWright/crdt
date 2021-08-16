@@ -31,8 +31,7 @@ class Record<V> {
       };
 
   @override
-  bool operator ==(other) =>
-      other is Record<V> && hlc == other.hlc && value == other.value;
+  bool operator ==(other) => other is Record<V> && hlc == other.hlc && value == other.value;
 
   @override
   String toString() => toJson('').toString();

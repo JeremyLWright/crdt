@@ -95,14 +95,15 @@ abstract class Crdt<K, V> {
   /// Use [keyDecoder] to convert non-string keys.
   /// Use [valueDecoder] to convert non-native value types.
   /// See also [merge()].
-  void mergeJson(String json, {KeyDecoder<K>? keyDecoder, ValueDecoder<V>? valueDecoder}) {
+  Future<void> mergeJson(String json,
+      {KeyDecoder<K>? keyDecoder, ValueDecoder<V>? valueDecoder}) async {
     final map = CrdtJson.decode<K, V>(
       json,
       _canonicalTime,
       keyDecoder: keyDecoder,
       valueDecoder: valueDecoder,
     );
-    merge(map);
+    await merge(map);
   }
 
   /// Iterates through the CRDT to find the highest HLC timestamp.

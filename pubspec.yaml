@@ -13,9 +13,7 @@ dependencies:
   moor: ^4.4.1
   moor_generator: ^4.4.1
   path: ^1.8.0
-  path_provider: ^2.0.2
   sqlite3: ^1.1.2
-  sqlite3_flutter_libs: ^0.2.0
   # no dependencies, no problems
 
 dev_dependencies:

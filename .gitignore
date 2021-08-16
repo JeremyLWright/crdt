@@ -21,3 +21,4 @@ pubspec.lock
 
 # Generated files
 *.g.dart
+*.sqlite

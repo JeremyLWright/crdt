@@ -106,8 +106,8 @@ void crdtTests<T extends Crdt<String, int>>(String nodeId,
             (MapEntry<String, int?> event) => event.key == 'x' && event.value == 1,
             (MapEntry<String, int?> event) => event.key == 'y' && event.value == 2,
           ]));
-      crdt.put('x', 1);
-      crdt.put('y', 2);
+      await crdt.put('x', 1);
+      await crdt.put('y', 2);
       await streamTest;
     });
 
@@ -117,8 +117,8 @@ void crdtTests<T extends Crdt<String, int>>(String nodeId,
           emits(
             (event) => event.key == 'y' && event.value == 2,
           ));
-      crdt.put('x', 1);
-      crdt.put('y', 2);
+      await crdt.put('x', 1);
+      await crdt.put('y', 2);
       await streamTest;
     });
 
